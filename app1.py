@@ -2,16 +2,12 @@ import gradio as gr
 import pickle
 import numpy as np
 
-# -------------------------
-# Load trained model
-# -------------------------
+
 with open("disease_model.pkl", "rb") as f:
     model = pickle.load(f)
 
 
-# -------------------------
-# Prediction Function with styled output
-# -------------------------
+
 def predict_disease(age, bp, chol):
     features = np.array([[age, bp, chol]])
     pred = model.predict(features)[0]
@@ -30,9 +26,7 @@ def predict_disease(age, bp, chol):
                   </div>"""
 
 
-# -------------------------
-# Login Function
-# -------------------------
+
 def login(username, password):
     if username == "admin" and password == "1234":
         return gr.update(visible=False), gr.update(visible=True), "✅ Login successful! Welcome 🎉"
@@ -40,9 +34,7 @@ def login(username, password):
         return gr.update(visible=True), gr.update(visible=False), "❌ Invalid credentials. Try again."
 
 
-# -------------------------
-# Gradio Blocks UI
-# -------------------------
+
 with gr.Blocks(
     css="""
     body {
@@ -74,9 +66,7 @@ with gr.Blocks(
     }
     """
 ) as demo:
-    # -------------------------
-    # Login Screen
-    # -------------------------
+
     with gr.Group(visible=True) as login_screen:
         gr.Markdown("<h1>🩺 Disease Detection System</h1>")
         gr.Markdown("### 🔑 Please log in to continue")
@@ -87,9 +77,7 @@ with gr.Blocks(
             login_btn = gr.Button("🔓 Login")
             login_msg = gr.Markdown("")
 
-    # -------------------------
-    # Dashboard (after login)
-    # -------------------------
+
     with gr.Group(visible=False) as dashboard_screen:
         gr.Markdown("<h2>👨‍⚕️ Patient Risk Prediction</h2>")
         
@@ -107,9 +95,7 @@ with gr.Blocks(
                 outputs=predict_out
             )
 
-    # -------------------------
-    # Switch screens after login
-    # -------------------------
+ 
     def handle_login(u, p):
         return login(u, p)
 
@@ -119,8 +105,6 @@ with gr.Blocks(
         outputs=[login_screen, dashboard_screen, login_msg]
     )
 
-# -------------------------
-# Run App
-# -------------------------
+
 if __name__ == "__main__":
     demo.launch()
